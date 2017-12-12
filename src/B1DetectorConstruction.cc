@@ -29,6 +29,7 @@
 /// \brief Implementation of the B1DetectorConstruction class
 
 #include "B1DetectorConstruction.hh"
+#include "B1SensitiveDetector.hh"
 
 #include "G4RunManager.hh"
 #include "G4NistManager.hh"
@@ -45,11 +46,15 @@
 #include "G4Color.hh"
 #include "G4VisAttributes.hh"
 
+#include "G4SDManager.hh"
+#include "G4MultiFunctionalDetector.hh"
+#include "G4SDParticleFilter.hh"
+#include "G4PSPassageCellCurrent.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1DetectorConstruction::B1DetectorConstruction()
-: G4VUserDetectorConstruction(),
-  fScoringVolume(0)
+: G4VUserDetectorConstruction()
 { }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -151,10 +156,6 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
                     false,                   //no boolean operation
                     0,                       //copy number
                     checkOverlaps);          //overlaps checking
-                
-  // Set Shape2 as scoring volume
-  //
-  fScoringVolume = logicShape2;
 
   //
   //always return the physical World
@@ -163,3 +164,13 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void B1DetectorConstruction::ConstructSDandField()
+{
+  // Sensitive detectors
+
+  G4String sdName = "sdFiberEnd";
+  B1SensitiveDetector* fiberSD = new B1SensitiveDetector(sdName);
+  G4SDManager::GetSDMpointer()->AddNewDetector(fiberSD);
+  SetSensitiveDetector("logicShape2", fiberSD);
+}
