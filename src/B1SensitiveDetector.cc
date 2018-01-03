@@ -23,5 +23,5 @@ void B1SensitiveDetector::Initialize (G4HCofThisEvent *)
 
 G4bool B1SensitiveDetector::ProcessHits (G4Step *aStep, G4TouchableHistory *ROhist)
 {
-    return true;
+    return false;
 }
