@@ -111,7 +111,7 @@ G4VPhysicalVolume* B1DetectorConstruction::Construct()
   // Shape 1
   //  
   G4Material* shape1_mat = nist->FindOrBuildMaterial("G4_PLEXIGLASS");
-  G4ThreeVector pos1 = G4ThreeVector(0, 0*cm, 0*cm);
+  G4ThreeVector pos1 = G4ThreeVector(0*cm, 0*cm, 0*cm);
   G4double fiberlength = 10.*cm;
               
   G4Tubs* solidShape1 = new G4Tubs("solidShape1", 0, 1.*cm, fiberlength/2., 0, CLHEP::twopi*radian);
