@@ -56,9 +56,13 @@ B1PrimaryGeneratorAction::B1PrimaryGeneratorAction()
   G4ParticleDefinition* particle
     = particleTable->FindParticle(particleName="opticalphoton");
   fParticleGun->SetParticleDefinition(particle);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-  fParticleGun->SetParticleEnergy(1.5*eV);
-  fParticleGun->SetParticlePolarization(G4ThreeVector(0,0,0));
+
+  G4double alphaMin = 0*deg;      //solid angle
+  G4double alphaMax = 180*deg;
+  fCosAlphaMax = std::cos(alphaMax);
+  fCosAlphaMin = std::cos(alphaMin);
+  fPsiMin = 0*deg;
+  fPsiMax = 360*deg;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -77,10 +81,10 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 
   // In order to avoid dependence of PrimaryGeneratorAction
   // on DetectorConstruction class we get Envelope volume
-  // from G4LogicalVolumeStore.
-  
-  G4double envSizeXY = 1.*cm;
-  G4double envSizeZ = 0;
+    // from G4LogicalVolumeStore.
+
+    G4double envSizeXY = 1.*cm;
+    G4double envSizeZ = 0;
 
   /*
   if (!fEnvelopeBox)
@@ -110,6 +114,19 @@ void B1PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4double z0 = -0.5 * envSizeZ;
   
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+  //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+  fParticleGun->SetParticleEnergy(1.5*eV);
+  fParticleGun->SetParticlePolarization(G4ThreeVector(0,0,0));
+
+  G4double cosAlpha = fCosAlphaMin-G4UniformRand()*(fCosAlphaMin-fCosAlphaMax);
+  G4double sinAlpha = std::sqrt(1. - cosAlpha*cosAlpha);
+  G4double psi = fPsiMin + G4UniformRand()*(fPsiMax - fPsiMin);
+
+  G4double ux = sinAlpha*std::cos(psi),
+           uy = sinAlpha*std::sin(psi),
+           uz = cosAlpha;
+
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(ux,uy,uz));
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
