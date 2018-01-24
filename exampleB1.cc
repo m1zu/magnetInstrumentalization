@@ -74,10 +74,10 @@ int main(int argc,char** argv)
   runManager->SetUserInitialization(new B1DetectorConstruction());
 
   // Physics list
-  runManager->SetUserInitialization(new B1PhysicsList());
-  /*G4VModularPhysicsList* physicsList = new QBBC;
+  //runManager->SetUserInitialization(new B1PhysicsList());
+  G4VModularPhysicsList* physicsList = new QBBC;
   physicsList->SetVerboseLevel(1);
-  runManager->SetUserInitialization(physicsList);*/
+  runManager->SetUserInitialization(physicsList);
     
   // User action initialization
   runManager->SetUserInitialization(new B1ActionInitialization());
